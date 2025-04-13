@@ -1,0 +1,380 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MusicShare - Partagez et découvrez de la musique</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        :root {
+            --primary-color: #1db954;
+            --dark-bg: #121212;
+            --card-bg: #1e1e1e;
+            --sidebar-bg: #191414;
+            --text-color: #f8f9fa;
+            --muted-text: #aaaaaa;
+        }
+        
+        body {
+            background-color: var(--dark-bg);
+            color: var(--text-color);
+            font-family: 'Segoe UI', Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+        }
+        
+        .navbar {
+            background-color: var(--sidebar-bg);
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+            padding: 12px 0;
+        }
+        
+        .navbar-brand {
+            font-size: 1.5rem;
+            font-weight: 600;
+        }
+        
+        .hero-section {
+            padding: 100px 0;
+            background: linear-gradient(to bottom, var(--primary-color), #169c46);
+            color: white;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .hero-section::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: url('https://images.unsplash.com/photo-1511671782779-c97d3d27a1d4?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80') center/cover no-repeat;
+            opacity: 0.2;
+            z-index: 0;
+        }
+        
+        .hero-section .container {
+            position: relative;
+            z-index: 1;
+        }
+        
+        .hero-section h1 {
+            font-size: 3.5rem;
+            font-weight: 800;
+            margin-bottom: 1.5rem;
+            text-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+        }
+        
+        .hero-section .lead {
+            font-size: 1.5rem;
+            margin-bottom: 2rem;
+            text-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+        }
+        
+        .features-section {
+            padding: 80px 0;
+            background-color: var(--dark-bg);
+        }
+        
+        .feature-card {
+            text-align: center;
+            margin-bottom: 30px;
+            padding: 30px 20px;
+            background-color: var(--card-bg);
+            border-radius: 12px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            transition: transform 0.3s, box-shadow 0.3s;
+            height: 100%;
+        }
+        
+        .feature-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
+        }
+        
+        .feature-icon {
+            font-size: 3em;
+            color: var(--primary-color);
+            margin-bottom: 20px;
+            transition: transform 0.3s;
+        }
+        
+        .feature-card:hover .feature-icon {
+            transform: scale(1.1);
+        }
+        
+        .feature-card h3 {
+            font-weight: 600;
+            margin-bottom: 15px;
+        }
+        
+        .feature-card p {
+            color: var(--muted-text);
+        }
+        
+        .about-section {
+            padding: 80px 0;
+            background-color: var(--card-bg);
+            position: relative;
+        }
+        
+        .about-section::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: url('https://images.unsplash.com/photo-1514525253161-7a46d19cd819?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80') center/cover no-repeat;
+            opacity: 0.05;
+            z-index: 0;
+        }
+        
+        .about-section .container {
+            position: relative;
+            z-index: 1;
+        }
+        
+        .section-title {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 30px;
+            position: relative;
+            padding-bottom: 15px;
+            display: inline-block;
+        }
+        
+        .section-title::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 60px;
+            height: 3px;
+            background-color: var(--primary-color);
+            border-radius: 3px;
+        }
+        
+        .btn-primary {
+            background-color: var(--primary-color);
+            border: none;
+            padding: 12px 25px;
+            font-weight: 600;
+            border-radius: 8px;
+        }
+        
+        .btn-primary:hover {
+            background-color: #18a349;
+        }
+        
+        .btn-outline-light {
+            border: 2px solid white;
+            font-weight: 600;
+            padding: 12px 25px;
+            border-radius: 8px;
+        }
+        
+        .btn-outline-light:hover {
+            background-color: rgba(255, 255, 255, 0.1);
+        }
+        
+        .footer {
+            background-color: var(--sidebar-bg);
+            color: var(--text-color);
+            padding: 50px 0 20px;
+        }
+        
+        .footer h5 {
+            font-weight: 600;
+            margin-bottom: 20px;
+            position: relative;
+            padding-bottom: 10px;
+            display: inline-block;
+        }
+        
+        .footer h5::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 40px;
+            height: 2px;
+            background-color: var(--primary-color);
+            border-radius: 2px;
+        }
+        
+        .footer a {
+            color: var(--muted-text);
+            text-decoration: none;
+            transition: color 0.3s;
+        }
+        
+        .footer a:hover {
+            color: var(--primary-color);
+            text-decoration: none;
+        }
+        
+        .footer .social-icon {
+            font-size: 1.5rem;
+            margin-right: 15px;
+            transition: transform 0.3s, color 0.3s;
+        }
+        
+        .footer .social-icon:hover {
+            transform: translateY(-3px);
+            color: var(--primary-color);
+        }
+        
+        .footer hr {
+            background-color: rgba(255, 255, 255, 0.1);
+            margin: 30px 0;
+        }
+    </style>
+</head>
+<body>
+    <!-- Barre de navigation -->
+    <nav class="navbar navbar-expand-lg navbar-dark">
+        <div class="container">
+            <a class="navbar-brand" href="{% url 'users:home' %}">
+                <i class="fas fa-music me-2"></i>MusicShare
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item">
+                        <a class="nav-link active" href="{% url 'users:home' %}">Accueil</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#features">Fonctionnalités</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#about">À propos</a>
+                    </li>
+                    <li class="nav-item ms-2">
+                        <a class="btn btn-outline-light" href="{% url 'users:login' %}">
+                            <i class="fas fa-sign-in-alt me-2"></i>Connexion
+                        </a>
+                    </li>
+                    <li class="nav-item ms-2">
+                        <a class="btn btn-primary" href="{% url 'users:register' %}">
+                            <i class="fas fa-user-plus me-2"></i>Inscription
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Section principale -->
+    <section class="hero-section">
+        <div class="container">
+            <h1 class="mb-4">Bienvenue sur MusicShare</h1>
+            <p class="lead mb-4">Partagez vos morceaux préférés et découvrez de nouvelles musiques</p>
+            <a href="{% url 'users:register' %}" class="btn btn-light btn-lg me-3">
+                <i class="fas fa-rocket me-2"></i>Commencer maintenant
+            </a>
+            <a href="#features" class="btn btn-outline-light btn-lg">
+                <i class="fas fa-info-circle me-2"></i>En savoir plus
+            </a>
+        </div>
+    </section>
+
+    <!-- Section des fonctionnalités -->
+    <section class="features-section" id="features">
+        <div class="container">
+            <h2 class="text-center section-title mx-auto mb-5">Nos fonctionnalités</h2>
+            <div class="row g-4">
+                <div class="col-md-3">
+                    <div class="feature-card">
+                        <div class="feature-icon">
+                            <i class="fas fa-upload"></i>
+                        </div>
+                        <h3>Upload de morceaux</h3>
+                        <p>Partagez facilement vos morceaux préférés avec la communauté</p>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="feature-card">
+                        <div class="feature-icon">
+                            <i class="fas fa-list"></i>
+                        </div>
+                        <h3>Playlists personnalisées</h3>
+                        <p>Créez et partagez vos playlists avec vos amis</p>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="feature-card">
+                        <div class="feature-icon">
+                            <i class="fas fa-history"></i>
+                        </div>
+                        <h3>Historique d'écoute</h3>
+                        <p>Suivez votre activité musicale et redécouvrez vos morceaux</p>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="feature-card">
+                        <div class="feature-icon">
+                            <i class="fas fa-user"></i>
+                        </div>
+                        <h3>Profil utilisateur</h3>
+                        <p>Personnalisez votre profil et partagez vos goûts musicaux</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Section d'appel à l'action -->
+    <section class="about-section" id="about">
+        <div class="container text-center">
+            <h2 class="section-title mx-auto mb-4">À propos de MusicShare</h2>
+            <p class="mb-4 lead">MusicShare est une plateforme qui permet aux passionnés de musique de partager leurs morceaux préférés, de créer des playlists personnalisées et de découvrir de nouvelles musiques. Notre mission est de connecter les amateurs de musique du monde entier.</p>
+            <p class="mb-5">Rejoignez notre communauté musicale dès aujourd'hui</p>
+            <a href="{% url 'users:register' %}" class="btn btn-primary btn-lg">
+                <i class="fas fa-user-plus me-2"></i>Créer un compte
+            </a>
+        </div>
+    </section>
+
+    <!-- Pied de page -->
+    <footer class="footer">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-4 mb-4 mb-md-0">
+                    <h5>MusicShare</h5>
+                    <p>La plateforme idéale pour partager et découvrir de la musique.</p>
+                </div>
+                <div class="col-md-4 mb-4 mb-md-0">
+                    <h5>Liens rapides</h5>
+                    <ul class="list-unstyled">
+                        <li class="mb-2"><a href="{% url 'users:home' %}">Accueil</a></li>
+                        <li class="mb-2"><a href="#features">Fonctionnalités</a></li>
+                        <li class="mb-2"><a href="#about">À propos</a></li>
+                        <li class="mb-2"><a href="{% url 'users:login' %}">Connexion</a></li>
+                        <li class="mb-2"><a href="{% url 'users:register' %}">Inscription</a></li>
+                    </ul>
+                </div>
+                <div class="col-md-4">
+                    <h5>Suivez-nous</h5>
+                    <div class="mt-3">
+                        <a href="#" class="social-icon"><i class="fab fa-facebook"></i></a>
+                        <a href="#" class="social-icon"><i class="fab fa-twitter"></i></a>
+                        <a href="#" class="social-icon"><i class="fab fa-instagram"></i></a>
+                        <a href="#" class="social-icon"><i class="fab fa-youtube"></i></a>
+                    </div>
+                </div>
+            </div>
+            <hr>
+            <p class="text-center mb-0">&copy; 2025 MusicShare. Tous droits réservés.</p>
+        </div>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

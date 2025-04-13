@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Modifier la playlist - MusicShare</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        :root {
+            --primary-color: #1db954;
+            --dark-bg: #121212;
+            --card-bg: #1e1e1e;
+            --sidebar-bg: #191414;
+            --text-color: #f8f9fa;
+            --muted-text: #aaaaaa;
+        }
+        
+        body {
+            background-color: var(--dark-bg);
+            color: var(--text-color);
+            font-family: 'Segoe UI', Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+        }
+        
+        .navbar {
+            background-color: var(--sidebar-bg);
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+            padding: 12px 0;
+        }
+        
+        .navbar-brand {
+            font-size: 1.5rem;
+            font-weight: 600;
+        }
+        
+        .user-welcome {
+            color: var(--text-color);
+            font-weight: 500;
+        }
+        
+        .form-container {
+            background-color: var(--card-bg);
+            border-radius: 10px;
+            padding: 30px;
+            margin-top: 30px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+        }
+        
+        .form-title {
+            color: var(--text-color);
+            font-weight: 700;
+            margin-bottom: 25px;
+            text-align: center;
+            position: relative;
+            padding-bottom: 15px;
+        }
+        
+        .form-title::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 60px;
+            height: 3px;
+            background-color: var(--primary-color);
+            border-radius: 3px;
+        }
+        
+        .form-control {
+            background-color: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            color: var(--text-color);
+            padding: 12px 15px;
+        }
+        
+        .form-control:focus {
+            background-color: rgba(255, 255, 255, 0.15);
+            border-color: var(--primary-color);
+            color: var(--text-color);
+            box-shadow: none;
+        }
+        
+        .form-select {
+            background-color: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            color: var(--text-color);
+            padding: 12px 15px;
+        }
+        
+        .form-select:focus {
+            background-color: rgba(255, 255, 255, 0.15);
+            border-color: var(--primary-color);
+            color: var(--text-color);
+            box-shadow: none;
+        }
+        
+        .form-text {
+            color: var(--muted-text);
+        }
+        
+        .form-label {
+            color: var(--text-color);
+            font-weight: 500;
+            margin-bottom: 8px;
+        }
+        
+        .btn-primary {
+            background-color: var(--primary-color);
+            border: none;
+            padding: 12px 25px;
+            font-weight: 600;
+            border-radius: 8px;
+        }
+        
+        .btn-primary:hover {
+            background-color: #18a349;
+        }
+        
+        .btn-back {
+            background-color: transparent;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            color: var(--text-color);
+            padding: 12px 25px;
+            font-weight: 600;
+            border-radius: 8px;
+            text-decoration: none;
+        }
+        
+        .btn-back:hover {
+            background-color: rgba(255, 255, 255, 0.1);
+            color: var(--text-color);
+        }
+        
+        .btn-danger {
+            background-color: #dc3545;
+            border: none;
+            padding: 12px 25px;
+            font-weight: 600;
+            border-radius: 8px;
+        }
+        
+        .btn-danger:hover {
+            background-color: #bb2d3b;
+        }
+        
+        .current-image {
+            max-width: 150px;
+            border-radius: 5px;
+            margin-bottom: 15px;
+        }
+    </style>
+</head>
+<body>
+    <!-- Barre de navigation -->
+    <nav class="navbar navbar-expand-lg navbar-dark">
+        <div class="container">
+            <a class="navbar-brand" href="{% url 'users:dashboard' %}">
+                <i class="fas fa-music me-2"></i>MusicShare
+            </a>
+            <div class="d-flex align-items-center">
+                <span class="user-welcome me-3">
+                    Bienvenue, {{ username }}
+                </span>
+                <a href="{% url 'users:logout' %}" class="btn btn-outline-light btn-sm">
+                    <i class="fas fa-sign-out-alt me-1"></i> Déconnexion
+                </a>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-md-8">
+                <div class="form-container">
+                    <h2 class="form-title">Modifier la playlist</h2>
+                    
+                    {% if messages %}
+                    <div class="messages mb-4">
+                        {% for message in messages %}
+                        <div class="alert alert-{{ message.tags }}">
+                            {{ message }}
+                        </div>
+                        {% endfor %}
+                    </div>
+                    {% endif %}
+                    
+                    <form method="post" enctype="multipart/form-data">
+                        {% csrf_token %}
+                        
+                        <div class="mb-3">
+                            <label for="nom" class="form-label">Nom de la playlist</label>
+                            <input type="text" class="form-control" id="nom" name="nom" value="{{ playlist.nom }}" required>
+                            <div class="form-text">Choisissez un nom pour votre playlist</div>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label for="description" class="form-label">Description</label>
+                            <textarea class="form-control" id="description" name="description" rows="3">{{ playlist.description }}</textarea>
+                            <div class="form-text">Décrivez votre playlist (optionnel)</div>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label for="visibilite" class="form-label">Visibilité</label>
+                            <select class="form-select" id="visibilite" name="visibilite">
+                                <option value="publique" {% if playlist.visibilite == 'publique' %}selected{% endif %}>Publique</option>
+                                <option value="privee" {% if playlist.visibilite == 'privee' %}selected{% endif %}>Privée</option>
+                            </select>
+                            <div class="form-text">Les playlists publiques sont visibles par tous les utilisateurs</div>
+                        </div>
+                        <div class="d-flex justify-content-between mt-4">
+                            <a href="{% url 'users:playlist_detail' playlist.id %}" class="btn btn-back">Annuler</a>
+                            <div>
+                                <button type="submit" class="btn btn-primary">
+                                    <i class="fas fa-save me-2"></i>Enregistrer les modifications
+                                </button>
+                            </div>
+                        </div>
+                    </form>
+                    
+                    <hr class="my-4">
+                    
+                    <div class="text-center">
+                        <h5 class="mb-3">Supprimer cette playlist</h5>
+                        <p class="text-muted mb-3">Attention: cette action est irréversible</p>
+                        <button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#deleteModal">
+                            <i class="fas fa-trash-alt me-2"></i>Supprimer la playlist
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Modal de confirmation de suppression -->
+    <div class="modal fade" id="deleteModal" tabindex="-1" aria-labelledby="deleteModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content bg-dark text-light">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="deleteModalLabel">Confirmer la suppression</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <p>Êtes-vous sûr de vouloir supprimer la playlist "{{ playlist.nom }}" ?</p>
+                    <p class="text-danger">Cette action est irréversible et tous les morceaux associés seront retirés de la playlist.</p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Annuler</button>
+                    <form action="{% url 'users:delete_playlist' playlist.id %}" method="post">
+                        {% csrf_token %}
+                        <button type="submit" class="btn btn-danger">Supprimer définitivement</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

@@ -1,0 +1,458 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mon Profil - MusicShare</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        :root {
+            --primary-color: #1db954;
+            --dark-bg: #121212;
+            --card-bg: #1e1e1e;
+            --sidebar-bg: #191414;
+            --text-color: #f8f9fa;
+            --muted-text: #aaaaaa;
+        }
+        
+        body {
+            background-color: var(--dark-bg);
+            color: var(--text-color);
+            font-family: 'Segoe UI', Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+        }
+        
+        .navbar {
+            background-color: var(--sidebar-bg);
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+            padding: 12px 0;
+        }
+        
+        .navbar-brand {
+            font-size: 1.5rem;
+            font-weight: 600;
+        }
+        
+        .profile-container {
+            background-color: var(--card-bg);
+            border-radius: 12px;
+            padding: 30px;
+            margin-top: 30px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+        }
+        
+        .profile-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 30px;
+        }
+        
+        .profile-avatar {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            object-fit: cover;
+            margin-right: 25px;
+            background-color: #333;
+            border: 3px solid var(--primary-color);
+        }
+        
+        .profile-info h2 {
+            font-size: 2rem;
+            font-weight: 700;
+            margin-bottom: 5px;
+        }
+        
+        .profile-info p {
+            color: var(--muted-text);
+            margin-bottom: 10px;
+        }
+        
+        .profile-stats {
+            display: flex;
+            margin-top: 15px;
+        }
+        
+        .stat-item {
+            margin-right: 25px;
+            text-align: center;
+        }
+        
+        .stat-value {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--primary-color);
+        }
+        
+        .stat-label {
+            color: var(--muted-text);
+            font-size: 0.9rem;
+        }
+        
+        .section-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin-bottom: 20px;
+            position: relative;
+            padding-bottom: 10px;
+        }
+        
+        .section-title::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 50px;
+            height: 3px;
+            background-color: var(--primary-color);
+            border-radius: 3px;
+        }
+        
+        .music-card {
+            background-color: rgba(255, 255, 255, 0.05);
+            border-radius: 8px;
+            padding: 15px;
+            margin-bottom: 15px;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+        }
+        
+        .music-card:hover {
+            background-color: rgba(255, 255, 255, 0.1);
+            transform: translateY(-3px);
+        }
+        
+        .music-cover {
+            width: 60px;
+            height: 60px;
+            border-radius: 6px;
+            object-fit: cover;
+            margin-right: 15px;
+            background-color: #333;
+        }
+        
+        .music-info {
+            flex-grow: 1;
+        }
+        
+        .music-title {
+            font-weight: 600;
+            margin-bottom: 3px;
+        }
+        
+        .music-artist {
+            color: var(--muted-text);
+            font-size: 0.9rem;
+        }
+        
+        .music-actions {
+            display: flex;
+            align-items: center;
+        }
+        
+        .btn-action {
+            background-color: transparent;
+            color: var(--text-color);
+            border: none;
+            padding: 8px;
+            border-radius: 50%;
+            transition: all 0.2s ease;
+            margin-left: 5px;
+        }
+        
+        .btn-action:hover {
+            background-color: rgba(255, 255, 255, 0.1);
+            color: var(--primary-color);
+        }
+        
+        .btn-edit-profile {
+            background-color: transparent;
+            border: 1px solid var(--primary-color);
+            color: var(--primary-color);
+            padding: 8px 20px;
+            border-radius: 50px;
+            font-weight: 600;
+            transition: all 0.2s ease;
+            text-decoration: none;
+        }
+        
+        .btn-edit-profile:hover {
+            background-color: var(--primary-color);
+            color: white;
+        }
+        
+        .tab-content {
+            margin-top: 25px;
+        }
+        
+        .nav-tabs {
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .nav-tabs .nav-link {
+            color: var(--text-color);
+            border: none;
+            padding: 12px 20px;
+            font-weight: 600;
+            border-radius: 0;
+            margin-right: 10px;
+        }
+        
+        .nav-tabs .nav-link:hover {
+            color: var(--primary-color);
+            border-color: transparent;
+        }
+        
+        .nav-tabs .nav-link.active {
+            color: var(--primary-color);
+            background-color: transparent;
+            border-bottom: 3px solid var(--primary-color);
+        }
+        
+        .playlist-card {
+            background-color: rgba(255, 255, 255, 0.05);
+            border-radius: 8px;
+            padding: 15px;
+            margin-bottom: 15px;
+            transition: all 0.3s ease;
+        }
+        
+        .playlist-card:hover {
+            background-color: rgba(255, 255, 255, 0.1);
+            transform: translateY(-3px);
+        }
+        
+        .playlist-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+        
+        .playlist-cover {
+            width: 60px;
+            height: 60px;
+            border-radius: 6px;
+            object-fit: cover;
+            margin-right: 15px;
+            background-color: #333;
+        }
+        
+        .playlist-info {
+            flex-grow: 1;
+        }
+        
+        .playlist-title {
+            font-weight: 600;
+            margin-bottom: 3px;
+        }
+        
+        .playlist-details {
+            color: var(--muted-text);
+            font-size: 0.9rem;
+        }
+        
+        .playlist-actions {
+            display: flex;
+            align-items: center;
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar navbar-expand-lg navbar-dark">
+        <div class="container">
+            <a class="navbar-brand" href="{% url 'users:dashboard' %}">
+                <i class="fas fa-music me-2"></i>MusicShare
+            </a>
+            <div class="d-flex align-items-center">
+                <span class="user-welcome me-3">
+                    Bienvenue, {{ user.username }}
+                </span>
+                <a href="{% url 'users:logout' %}" class="btn btn-outline-light btn-sm">
+                    <i class="fas fa-sign-out-alt me-1"></i> Déconnexion
+                </a>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container">
+        <div class="row">
+            <div class="col-md-12">
+                <div class="profile-container">
+                    <div class="profile-header">
+                        <!-- Replace photo with default avatar icon -->
+                        <div class="profile-avatar d-flex justify-content-center align-items-center">
+                            <i class="fas fa-user fa-4x text-muted"></i>
+                        </div>
+                        <div class="profile-info">
+                            <h2>{{ user.username }}</h2>
+                            <p>{{ user.email }}</p>
+                            <div class="profile-stats">
+                                <div class="stat-item">
+                                    <div class="stat-value">{{ uploaded_tracks_count }}</div>
+                                    <div class="stat-label">Morceaux</div>
+                                </div>
+                                <div class="stat-item">
+                                    <div class="stat-value">{{ playlists_count }}</div>
+                                    <div class="stat-label">Playlists</div>
+                                </div>
+                                <div class="stat-item">
+                                    <div class="stat-value">{{ history_count }}</div>
+                                    <div class="stat-label">Écoutes</div>
+                                </div>
+                            </div>
+                            <div class="mt-3">
+                                <a href="{% url 'users:edit_profile' %}" class="btn-edit-profile">
+                                    <i class="fas fa-edit me-2"></i>Modifier le profil
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <ul class="nav nav-tabs" id="profileTabs" role="tablist">
+                        <li class="nav-item" role="presentation">
+                            <button class="nav-link active" id="uploads-tab" data-bs-toggle="tab" data-bs-target="#uploads" type="button" role="tab" aria-controls="uploads" aria-selected="true">
+                                <i class="fas fa-music me-2"></i>Mes morceaux
+                            </button>
+                        </li>
+                        <li class="nav-item" role="presentation">
+                            <button class="nav-link" id="playlists-tab" data-bs-toggle="tab" data-bs-target="#playlists" type="button" role="tab" aria-controls="playlists" aria-selected="false">
+                                <i class="fas fa-list me-2"></i>Mes playlists
+                            </button>
+                        </li>
+                        <li class="nav-item" role="presentation">
+                            <button class="nav-link" id="history-tab" data-bs-toggle="tab" data-bs-target="#history" type="button" role="tab" aria-controls="history" aria-selected="false">
+                                <i class="fas fa-history me-2"></i>Historique d'écoute
+                            </button>
+                        </li>
+                    </ul>
+                    
+                    <div class="tab-content" id="profileTabsContent">
+                        <!-- Uploads Tab -->
+                        <div class="tab-pane fade show active" id="uploads" role="tabpanel" aria-labelledby="uploads-tab">
+                            <div class="d-flex justify-content-between align-items-center mb-4">
+                                <h3 class="section-title">Mes morceaux uploadés</h3>
+                                <a href="{% url 'users:upload_music' %}" class="btn btn-sm btn-success">
+                                    <i class="fas fa-upload me-2"></i>Uploader un morceau
+                                </a>
+                            </div>
+                            
+                            {% if uploaded_tracks %}
+                                {% for track in uploaded_tracks %}
+                                <div class="music-card">
+                                    <img src="{{ track.couverture.url|default:'/static/images/default-cover.jpg' }}" alt="Couverture" class="music-cover">
+                                    <div class="music-info">
+                                        <div class="music-title">{{ track.titre }}</div>
+                                        <div class="music-artist">{{ track.artiste }}</div>
+                                    </div>
+                                    <div class="music-actions">
+                                        <a href="{% url 'users:play_track' track.id %}" class="btn-action">
+                                            <i class="fas fa-play"></i>
+                                        </a>
+                                        <a href="{% url 'users:track_detail' track.id %}" class="btn-action">
+                                            <i class="fas fa-info-circle"></i>
+                                        </a>
+                                    </div>
+                                </div>
+                                {% endfor %}
+                            {% else %}
+                                <div class="text-center p-5">
+                                    <i class="fas fa-music fa-3x mb-3 text-muted"></i>
+                                    <h4>Aucun morceau uploadé</h4>
+                                    <p class="text-muted">Commencez à uploader vos morceaux préférés</p>
+                                    <a href="{% url 'users:upload_music' %}" class="btn btn-success mt-3">
+                                        <i class="fas fa-upload me-2"></i>Uploader un morceau
+                                    </a>
+                                </div>
+                            {% endif %}
+                        </div>
+                        
+                        <!-- Playlists Tab -->
+                        <div class="tab-pane fade" id="playlists" role="tabpanel" aria-labelledby="playlists-tab">
+                            <div class="d-flex justify-content-between align-items-center mb-4">
+                                <h3 class="section-title">Mes playlists</h3>
+                                <a href="{% url 'users:create_playlist' %}" class="btn btn-sm btn-success">
+                                    <i class="fas fa-plus me-2"></i>Créer une playlist
+                                </a>
+                            </div>
+                            
+                            {% if playlists %}
+                                {% for playlist in playlists %}
+                                <div class="playlist-card">
+                                    <div class="playlist-header">
+                                        <!-- Replace image with an icon -->
+                                        <div class="playlist-cover d-flex align-items-center justify-content-center bg-dark" style="width: 60px; height: 60px; border-radius: 4px;">
+                                            <i class="fas fa-music text-muted"></i>
+                                        </div>
+                                        <div class="playlist-info">
+                                            <div class="playlist-title">{{ playlist.nom }}</div>
+                                            <div class="playlist-details">
+                                                {% with count=playlist.morceauplaylist_set.count %}
+                                                    {{ count }} morceau{% if count != 1 %}x{% endif %} • 
+                                                {% endwith %}
+                                                {{ playlist.visibilite|title }}
+                                            </div>
+                                        </div>
+                                        <div class="playlist-actions">
+                                            <a href="{% url 'users:playlist_detail' playlist.id %}" class="btn-action">
+                                                <i class="fas fa-play"></i>
+                                            </a>
+                                        </div>
+                                    </div>
+                                    {% if playlist.description %}
+                                        <div class="mt-2 text-muted">{{ playlist.description|truncatechars:100 }}</div>
+                                    {% endif %}
+                                </div>
+                                {% endfor %}
+                            {% else %}
+                                <div class="text-center p-5">
+                                    <i class="fas fa-list fa-3x mb-3 text-muted"></i>
+                                    <h4>Aucune playlist créée</h4>
+                                    <p class="text-muted">Créez votre première playlist pour organiser votre musique</p>
+                                    <a href="{% url 'users:create_playlist' %}" class="btn btn-success mt-3">
+                                        <i class="fas fa-plus me-2"></i>Créer une playlist
+                                    </a>
+                                </div>
+                            {% endif %}
+                        </div>
+                        
+                        <!-- History Tab -->
+                        <div class="tab-pane fade" id="history" role="tabpanel" aria-labelledby="history-tab">
+                            <h3 class="section-title">Historique d'écoute</h3>
+                            
+                            {% if history %}
+                                {% for item in history %}
+                                <div class="music-card">
+                                    <img src="{{ item.morceau.couverture.url|default:'/static/images/default-cover.jpg' }}" alt="Couverture" class="music-cover">
+                                    <div class="music-info">
+                                        <div class="music-title">{{ item.morceau.titre }}</div>
+                                        <div class="music-artist">{{ item.morceau.artiste }}</div>
+                                        <small class="text-muted">Écouté le {{ item.date|date:"d/m/Y à H:i" }}</small>
+                                    </div>
+                                    <div class="music-actions">
+                                        <a href="{% url 'users:play_track' item.morceau.id %}" class="btn-action">
+                                            <i class="fas fa-play"></i>
+                                        </a>
+                                    </div>
+                                </div>
+                                {% endfor %}
+                            {% else %}
+                                <div class="text-center p-5">
+                                    <i class="fas fa-headphones fa-3x mb-3 text-muted"></i>
+                                    <h4>Aucun historique d'écoute</h4>
+                                    <p class="text-muted">Commencez à écouter de la musique pour voir votre historique</p>
+                                </div>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
