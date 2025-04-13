@@ -111,7 +111,29 @@
                                 </div>
                             </div>
                             
-                            <!-- Modal remains unchanged -->
+                            <!-- Make sure this modal is defined for each playlist -->
+                            <!-- Modal for delete confirmation -->
+                            <div class="modal fade" id="deleteModal{{ playlist.id }}" tabindex="-1" aria-labelledby="deleteModalLabel{{ playlist.id }}" aria-hidden="true">
+                                <div class="modal-dialog">
+                                    <div class="modal-content bg-dark text-light">
+                                        <div class="modal-header">
+                                            <h5 class="modal-title" id="deleteModalLabel{{ playlist.id }}">Confirmer la suppression</h5>
+                                            <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                                        </div>
+                                        <div class="modal-body">
+                                            <p>Êtes-vous sûr de vouloir supprimer la playlist "{{ playlist.nom }}" ?</p>
+                                            <p class="text-danger">Cette action est irréversible et tous les morceaux associés seront retirés de la playlist.</p>
+                                        </div>
+                                        <div class="modal-footer">
+                                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Annuler</button>
+                                            <form action="{% url 'users:delete_playlist' playlist.id %}" method="post">
+                                                {% csrf_token %}
+                                                <button type="submit" class="btn btn-danger">Supprimer définitivement</button>
+                                            </form>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                         {% endfor %}
                     {% else %}
