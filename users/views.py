@@ -38,7 +38,8 @@ class registre(View):
         user.save()
         
         request.session['user_id'] = user.id
-        return redirect('users:dashboard')
+        messages.success(request, "Inscription réussie! Bienvenue sur notre plateforme.")
+        return redirect('users:login')
 
 # Login view
 class login(View):
@@ -136,7 +137,7 @@ class upload_music(View):
         
         messages.success(request, "Morceau uploadé avec succès!")
         return redirect('users:dashboard')
-
+        
 # Track detail view
 class track_detail(View):
     def get(self, request, track_id):
@@ -555,3 +556,26 @@ class delete_playlist(View):
         
         messages.success(request, "Playlist supprimée avec succès!")
         return redirect('users:playlists')
+
+# Nouvelle vue pour récupérer les morceaux de l'utilisateur
+class user_tracks(View):
+    def get(self, request):
+        if 'user_id' not in request.session:
+            return JsonResponse({'error': 'User not logged in'}, status=401)
+        
+        user_id = request.session['user_id']
+        user = User.objects.get(id=user_id)
+        
+        tracks = Morceau.objects.filter(user=user)
+        tracks_data = []
+        
+        for track in tracks:
+            tracks_data.append({
+                'id': track.id,
+                'titre': track.titre,
+                'artiste': track.artiste,
+                'genre': track.genre,
+                'fichier_url': track.fichier.url if track.fichier else None,
+            })
+        
+        return JsonResponse({'tracks': tracks_data})

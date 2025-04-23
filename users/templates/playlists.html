@@ -77,9 +77,14 @@
                 
                 <div class="section-title">
                     <h1>Mes Playlists</h1>
-                    <a href="{% url 'users:create_playlist' %}" class="btn-create" style="font-size: 0.9rem; padding: 6px 12px;">
-                        <i class="fas fa-plus me-2"></i>Créer une playlist
-                    </a>
+                    <div>
+                        <button class="btn btn-primary me-2" data-bs-toggle="modal" data-bs-target="#addTrackModal">
+                            <i class="fas fa-music me-2"></i>Ajouter un morceau
+                        </button>
+                        <a href="{% url 'users:create_playlist' %}" class="btn-create" style="font-size: 0.9rem; padding: 6px 12px;">
+                            <i class="fas fa-plus me-2"></i>Créer une playlist
+                        </a>
+                    </div>
                 </div>
                 
                 <div class="row">
@@ -144,6 +149,274 @@
         </div>
     </div>
 
+    <!-- Modal pour ajouter un morceau à une playlist -->
+    <div class="modal fade" id="addTrackModal" tabindex="-1" aria-labelledby="addTrackModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content bg-dark text-light">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="addTrackModalLabel">Ajouter un morceau à une playlist</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="row mb-4">
+                        <div class="col-md-6">
+                            <h6>Sélectionner une playlist</h6>
+                            <select class="form-select" id="playlistSelect">
+                                <option value="">Choisir une playlist...</option>
+                                {% for playlist in playlists %}
+                                <option value="{{ playlist.id }}">{{ playlist.nom }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        <div class="col-md-6 text-end">
+                            <button id="addSelectedTracksBtn" class="btn btn-success" disabled>
+                                <i class="fas fa-plus-circle me-2"></i>Ajouter les morceaux sélectionnés
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" id="selectAllTracks">
+                            <label class="form-check-label" for="selectAllTracks">
+                                Sélectionner tous les morceaux
+                            </label>
+                        </div>
+                    </div>
+                    
+                    <h6>Mes morceaux</h6>
+                    <div id="tracksList" class="track-list-container">
+                        <div class="text-center py-4">
+                            <div class="spinner-border text-primary" role="status">
+                                <span class="visually-hidden">Chargement...</span>
+                            </div>
+                            <p class="mt-2">Chargement des morceaux...</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fermer</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const tracksList = document.getElementById('tracksList');
+            const playlistSelect = document.getElementById('playlistSelect');
+            const selectAllTracksCheckbox = document.getElementById('selectAllTracks');
+            const addSelectedTracksBtn = document.getElementById('addSelectedTracksBtn');
+            let selectedTracks = [];
+            
+            // Mettre à jour le bouton d'ajout en fonction des sélections
+            function updateAddButton() {
+                addSelectedTracksBtn.disabled = selectedTracks.length === 0 || !playlistSelect.value;
+            }
+            
+            // Gérer la sélection de tous les morceaux
+            selectAllTracksCheckbox.addEventListener('change', function() {
+                const trackCheckboxes = document.querySelectorAll('.track-checkbox');
+                trackCheckboxes.forEach(checkbox => {
+                    checkbox.checked = selectAllTracksCheckbox.checked;
+                    const trackId = parseInt(checkbox.dataset.trackId);
+                    
+                    if (selectAllTracksCheckbox.checked) {
+                        if (!selectedTracks.includes(trackId)) {
+                            selectedTracks.push(trackId);
+                        }
+                    } else {
+                        selectedTracks = selectedTracks.filter(id => id !== trackId);
+                    }
+                    
+                    // Mettre à jour l'apparence du morceau
+                    const trackItem = checkbox.closest('.track-item');
+                    if (checkbox.checked) {
+                        trackItem.classList.add('selected');
+                    } else {
+                        trackItem.classList.remove('selected');
+                    }
+                });
+                
+                updateAddButton();
+            });
+            
+            // Ajouter les morceaux sélectionnés à la playlist
+            addSelectedTracksBtn.addEventListener('click', function() {
+                const playlistId = playlistSelect.value;
+                
+                if (!playlistId) {
+                    alert('Veuillez sélectionner une playlist');
+                    return;
+                }
+                
+                if (selectedTracks.length === 0) {
+                    alert('Veuillez sélectionner au moins un morceau');
+                    return;
+                }
+                
+                const csrfToken = document.querySelector('[name=csrfmiddlewaretoken]').value;
+                
+                // Ajouter chaque morceau sélectionné à la playlist
+                let successCount = 0;
+                let errorCount = 0;
+                
+                const addTrackPromises = selectedTracks.map(trackId => {
+                    return fetch(`/playlist/${playlistId}/add/${trackId}/`, {
+                        method: 'POST',
+                        headers: {
+                            'X-CSRFToken': csrfToken,
+                            'Content-Type': 'application/json'
+                        }
+                    })
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.success) {
+                            successCount++;
+                        } else {
+                            errorCount++;
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Erreur:', error);
+                        errorCount++;
+                    });
+                });
+                
+                Promise.all(addTrackPromises).then(() => {
+                    if (successCount > 0) {
+                        alert(`${successCount} morceau(x) ajouté(s) à la playlist avec succès!`);
+                        // Réinitialiser les sélections
+                        selectedTracks = [];
+                        selectAllTracksCheckbox.checked = false;
+                        document.querySelectorAll('.track-checkbox').forEach(checkbox => {
+                            checkbox.checked = false;
+                            checkbox.closest('.track-item').classList.remove('selected');
+                        });
+                        updateAddButton();
+                    }
+                    
+                    if (errorCount > 0) {
+                        alert(`Erreur lors de l'ajout de ${errorCount} morceau(x).`);
+                    }
+                });
+            });
+            
+            // Charger les morceaux de l'utilisateur
+            function loadUserTracks() {
+                fetch('/api/user-tracks/')
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.tracks && data.tracks.length > 0) {
+                            let tracksHtml = '';
+                            data.tracks.forEach(track => {
+                                tracksHtml += `
+                                <div class="track-item" data-track-id="${track.id}">
+                                    <div class="track-select">
+                                        <input type="checkbox" class="form-check-input track-checkbox" data-track-id="${track.id}">
+                                    </div>
+                                    <div class="track-cover d-flex align-items-center justify-content-center bg-dark">
+                                        <i class="fas fa-music"></i>
+                                    </div>
+                                    <div class="track-info">
+                                        <div class="track-title">${track.titre}</div>
+                                        <div class="track-artist">${track.artiste}</div>
+                                    </div>
+                                    <button class="btn btn-add-track" onclick="addTrackToPlaylist(${track.id})">
+                                        <i class="fas fa-plus"></i> Ajouter
+                                    </button>
+                                </div>`;
+                            });
+                            tracksList.innerHTML = tracksHtml;
+                            
+                            // Ajouter les écouteurs d'événements pour les cases à cocher
+                            document.querySelectorAll('.track-checkbox').forEach(checkbox => {
+                                checkbox.addEventListener('change', function() {
+                                    const trackId = parseInt(this.dataset.trackId);
+                                    const trackItem = this.closest('.track-item');
+                                    
+                                    if (this.checked) {
+                                        if (!selectedTracks.includes(trackId)) {
+                                            selectedTracks.push(trackId);
+                                        }
+                                        trackItem.classList.add('selected');
+                                    } else {
+                                        selectedTracks = selectedTracks.filter(id => id !== trackId);
+                                        trackItem.classList.remove('selected');
+                                    }
+                                    
+                                    updateAddButton();
+                                });
+                            });
+                        } else {
+                            tracksList.innerHTML = `
+                            <div class="empty-tracks">
+                                <i class="fas fa-music fa-3x mb-3"></i>
+                                <h5>Aucun morceau trouvé</h5>
+                                <p>Vous n'avez pas encore uploadé de morceaux.</p>
+                                <a href="{% url 'users:upload_music' %}" class="btn btn-primary mt-2">
+                                    <i class="fas fa-upload me-2"></i>Uploader un morceau
+                                </a>
+                            </div>`;
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Erreur lors du chargement des morceaux:', error);
+                        tracksList.innerHTML = `
+                        <div class="alert alert-danger">
+                            Une erreur est survenue lors du chargement des morceaux. Veuillez réessayer.
+                        </div>`;
+                    });
+            }
+            
+            // Fonction pour ajouter un morceau à une playlist
+            window.addTrackToPlaylist = function(trackId) {
+                const playlistId = playlistSelect.value;
+                
+                if (!playlistId) {
+                    alert('Veuillez sélectionner une playlist');
+                    return;
+                }
+                
+                const csrfToken = document.querySelector('[name=csrfmiddlewaretoken]').value;
+                
+                fetch(`/playlist/${playlistId}/add/${trackId}/`, {
+                    method: 'POST',
+                    headers: {
+                        'X-CSRFToken': csrfToken,
+                        'Content-Type': 'application/json'
+                    }
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        alert('Morceau ajouté à la playlist avec succès!');
+                        // Optionnel: Rafraîchir la liste des playlists
+                        // window.location.reload();
+                    } else {
+                        alert(data.error || 'Une erreur est survenue');
+                    }
+                })
+                .catch(error => {
+                    console.error('Erreur:', error);
+                    alert('Une erreur est survenue lors de l\'ajout du morceau');
+                });
+            };
+            
+            // Écouter les changements dans le sélecteur de playlist
+            playlistSelect.addEventListener('change', updateAddButton);
+            
+            // Charger les morceaux quand la modal est ouverte
+            const addTrackModal = document.getElementById('addTrackModal');
+            addTrackModal.addEventListener('show.bs.modal', function (event) {
+                loadUserTracks();
+                selectedTracks = [];
+                updateAddButton();
+            });
+        });
+    </script>
+    <!-- À la fin du fichier, juste avant la fermeture de la balise body -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="{% static 'js/player.js' %}"></script>
 </body>
 </html>

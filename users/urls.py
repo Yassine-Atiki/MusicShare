@@ -26,8 +26,11 @@ urlpatterns = [
     path('profile/edit/', views.edit_profile.as_view(), name='edit_profile'),
     path('profile/delete/', views.delete_account.as_view(), name='delete_account'),
     path('history/', views.history.as_view(), name='history'),
-    
+
     # Playlist edit/delete URLs
     path('playlists/<int:playlist_id>/edit/', views.edit_playlist.as_view(), name='edit_playlist'),
     path('playlists/<int:playlist_id>/delete/', views.delete_playlist.as_view(), name='delete_playlist'),
+
+    # API URLs
+    path('api/user-tracks/', views.user_tracks.as_view(), name='user_tracks'),
 ]
