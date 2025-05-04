@@ -578,3 +578,18 @@ class user_tracks(View):
             })
         
         return JsonResponse({'tracks': tracks_data})
+
+# Clear history view
+class clear_history(View):
+    def post(self, request):
+        if 'user_id' not in request.session:
+            return redirect('users:login')
+        
+        user_id = request.session['user_id']
+        user = User.objects.get(id=user_id)
+        
+        # Supprimer tout l'historique de l'utilisateur
+        Historique.objects.filter(user=user).delete()
+        
+        messages.success(request, "Votre historique d'écoute a été supprimé avec succès!")
+        return redirect('users:history')

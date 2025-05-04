@@ -1,0 +1,143 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Historique d'écoute - MusicShare</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="{% static 'CSS/dashboard.css' %}">
+</head>
+<body>
+    <nav class="navbar navbar-expand-lg navbar-dark">
+        <div class="container">
+            <a class="navbar-brand" href="{% url 'users:dashboard' %}">
+                <i class="fas fa-music me-2"></i>MusicShare
+            </a>
+            <div class="d-flex align-items-center">
+                <span class="user-welcome me-3">
+                    Bienvenue, {{ user.username }}
+                </span>
+                <a href="{% url 'users:logout' %}" class="btn btn-logout btn-outline-light btn-sm">
+                    <i class="fas fa-sign-out-alt me-1"></i> Déconnexion
+                </a>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container-fluid">
+        <div class="row">
+            <!-- Sidebar -->
+            <div class="col-md-3 col-lg-2 sidebar">
+                <div class="d-grid gap-2 mb-4">
+                    <a href="{% url 'users:upload_music' %}" class="upload-btn">
+                        <i class="fas fa-upload me-2"></i>Uploader un morceau
+                    </a>
+                    <a href="{% url 'users:create_playlist' %}" class="create-btn">
+                        <i class="fas fa-plus me-2"></i>Créer une playlist
+                    </a>
+                </div>
+                
+                <div class="d-flex flex-column">
+                    <a href="{% url 'users:dashboard' %}" class="sidebar-link">
+                        <i class="fas fa-home"></i>Accueil
+                    </a>
+                    <a href="#" class="sidebar-link">
+                        <i class="fas fa-search"></i>Explorer
+                    </a>
+                    <a href="{% url 'users:playlists' %}" class="sidebar-link">
+                        <i class="fas fa-list"></i>Mes Playlists
+                    </a>
+                    <a href="#" class="sidebar-link">
+                        <i class="fas fa-heart"></i>Favoris
+                    </a>
+                    <a href="{% url 'users:history' %}" class="sidebar-link active">
+                        <i class="fas fa-history"></i>Historique
+                    </a>
+                    <a href="{% url 'users:profile' %}" class="sidebar-link">
+                        <i class="fas fa-user"></i>Mon Profil
+                    </a>
+                    <a href="{% url 'users:edit_profile' %}" class="sidebar-link">
+                        <i class="fas fa-cog"></i>Paramètres
+                    </a>
+                </div>
+            </div>
+
+            <!-- Main Content -->
+            <div class="col-md-9 col-lg-10 main-content">
+                <div class="d-flex justify-content-between align-items-center mb-4">
+                    <h2 class="section-title">Historique d'écoute</h2>
+                    {% if history %}
+                    <form action="{% url 'users:clear_history' %}" method="post" onsubmit="return confirm('Êtes-vous sûr de vouloir supprimer tout votre historique d\'écoute ?');">
+                        {% csrf_token %}
+                        <button type="submit" class="btn btn-danger">
+                            <i class="fas fa-trash me-2"></i>Supprimer l'historique
+                        </button>
+                    </form>
+                    {% endif %}
+                </div>
+                
+                {% if history %}
+                    <div class="row">
+                        {% for item in history %}
+                        <div class="col-md-4 col-lg-3 mb-4">
+                            <div class="music-card">
+                                <div class="track-img">
+                                    {% if item.morceau.image_couverture %}
+                                        <img src="{{ item.morceau.image_couverture.url }}" alt="{{ item.morceau.titre }}" class="img-fluid">
+                                    {% else %}
+                                        <i class="fas fa-music fa-3x text-muted"></i>
+                                    {% endif %}
+                                </div>
+                                <h5 class="card-title">{{ item.morceau.titre }}</h5>
+                                <p class="card-artist">{{ item.morceau.artiste }}</p>
+                                <small class="text-muted d-block mb-2">Écouté le {{ item.date|date:"d/m/Y à H:i" }}</small>
+                                <button class="btn-play w-100 play-track" data-track-id="{{ item.morceau.id }}">
+                                    <i class="fas fa-play me-2"></i>Écouter
+                                </button>
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </div>
+                {% else %}
+                    <div class="text-center p-5 bg-dark rounded">
+                        <i class="fas fa-headphones fa-3x mb-3 text-muted"></i>
+                        <h4>Aucun historique d'écoute</h4>
+                        <p class="text-muted">Commencez à écouter de la musique pour voir votre historique</p>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+
+    <!-- Player bar (fixed at bottom) -->
+    <div class="player-bar d-none">
+        <div class="now-playing">
+            <div class="track-info">
+                <div class="track-title"></div>
+                <div class="track-artist"></div>
+            </div>
+        </div>
+        <div class="player-controls">
+            <button class="pause-btn"><i class="fas fa-play"></i></button>
+            <button class="close-btn"><i class="fas fa-times"></i></button>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- Ajout du fichier players.js qui contient les fonctions de lecture audio -->
+    <script src="{% static 'js/players.js' %}"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Fonction pour jouer un morceau
+            document.querySelectorAll('.play-track').forEach(button => {
+                button.addEventListener('click', function() {
+                    const trackId = this.getAttribute('data-track-id');
+                    playTrack(trackId, this);
+                });
+            });
+        });
+    </script>
+</body>
+</html>

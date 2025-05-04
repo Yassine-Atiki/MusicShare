@@ -26,6 +26,7 @@ urlpatterns = [
     path('profile/edit/', views.edit_profile.as_view(), name='edit_profile'),
     path('profile/delete/', views.delete_account.as_view(), name='delete_account'),
     path('history/', views.history.as_view(), name='history'),
+    path('history/clear/', views.clear_history.as_view(), name='clear_history'),
 
     # Playlist edit/delete URLs
     path('playlists/<int:playlist_id>/edit/', views.edit_playlist.as_view(), name='edit_playlist'),
