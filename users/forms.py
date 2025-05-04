@@ -13,7 +13,7 @@ class UserForm(forms.ModelForm):
 class MorceauForm(forms.ModelForm):
     class Meta:
         model = Morceau
-        fields = ['titre', 'artiste', 'genre', 'fichier']  # Removed couverture
+        fields = ['titre', 'artiste', 'genre', 'fichier'] 
 
 class PlaylistForm(forms.ModelForm):
     class Meta:

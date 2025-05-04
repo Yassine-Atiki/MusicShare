@@ -107,7 +107,7 @@
                     {% if playlist_tracks %}
                         {% for track_item in playlist_tracks %}
                         <!-- Pour chaque morceau dans la playlist, modifiez le bouton de lecture -->
-                        <div class="track-item" data-track-id="{{ track.morceau.id }}">
+                        <div class="track-item" data-track-id="{{ track_item.morceau.id }}">
                             <div class="track-number">{{ track_item.ordre }}</div>
                             <!-- Replace the cover image with a default icon if no cover exists -->
                             <div class="track-cover d-flex align-items-center justify-content-center bg-dark">
@@ -180,25 +180,7 @@
             playButtons.forEach(button => {
                 button.addEventListener('click', function() {
                     const trackId = this.getAttribute('data-track-id');
-                    
-                    // Reset all play buttons to show play icon
-                    playButtons.forEach(btn => {
-                        btn.innerHTML = '<i class="fas fa-play"></i>';
-                    });
-                    
-                    // Get track data from server
-                    fetch(`/play/${trackId}/`)
-                        .then(response => response.json())
-                        .then(data => {
-                            audioPlayer.src = data.file_url;
-                            audioPlayer.play();
-                            
-                            // Change button to pause icon
-                            this.innerHTML = '<i class="fas fa-pause"></i>';
-                        })
-                        .catch(error => {
-                            console.error('Error playing track:', error);
-                        });
+                    playTrack(trackId, this);
                 });
             });
             
@@ -290,6 +272,6 @@
     </div>
 
     <!-- À la fin du fichier, incluez le script player.js -->
-    <script src="{% static 'js/player.js' %}"></script>
+    <script src="{% static 'js/players.js' %}"></script>
 </body>
 </html>

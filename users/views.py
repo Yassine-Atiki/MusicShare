@@ -176,10 +176,9 @@ class play_track(View):
         
         # Return the file URL
         return JsonResponse({
-            'title': track.titre,
-            'artist': track.artiste,
+            'titre': track.titre,
+            'artiste': track.artiste,
             'file_url': track.fichier.url,
-            # Removed 'cover_url' since 'couverture' is no longer used
         })
 
 # Playlists view

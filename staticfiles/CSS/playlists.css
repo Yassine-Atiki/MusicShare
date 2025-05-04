@@ -1,0 +1,321 @@
+:root {
+    --primary-color: #1db954;
+    --dark-bg: #121212;
+    --card-bg: #1e1e1e;
+    --sidebar-bg: #191414;
+    --text-color: #f8f9fa;
+    --muted-text: #aaaaaa;
+}
+
+body {
+    background-color: var(--dark-bg);
+    color: var(--text-color);
+    font-family: 'Segoe UI', Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+}
+
+.navbar {
+    background-color: var(--sidebar-bg);
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+    padding: 12px 0;
+}
+
+.navbar-brand {
+    font-size: 1.5rem;
+    font-weight: 600;
+}
+
+.sidebar {
+    background-color: var(--sidebar-bg);
+    min-height: calc(100vh - 64px);
+    padding: 25px;
+    transition: all 0.3s ease;
+    box-shadow: 2px 0 10px rgba(0, 0, 0, 0.1);
+}
+
+.main-content {
+    padding: 30px;
+}
+
+.section-title {
+    font-size: 1.8rem;
+    font-weight: 700;
+    margin-bottom: 25px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.btn-create {
+    background-color: var(--primary-color);
+    color: white;
+    border: none;
+    padding: 6px 12px;
+    border-radius: 5px;
+    font-weight: 600;
+    font-size: 0.9rem;
+    transition: all 0.2s ease;
+    text-decoration: none;
+}
+
+.btn-create:hover {
+    background-color: #19a34a;
+    color: white;
+}
+
+.playlist-card {
+    background-color: var(--card-bg);
+    border-radius: 10px;
+    padding: 15px;
+    margin-bottom: 20px;
+    transition: all 0.3s ease;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+}
+
+.playlist-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+}
+
+/* Update the album-art style to work as a container for the icon */
+.album-art {
+    width: 100%;
+    aspect-ratio: 1/1;
+    border-radius: 5px;
+    margin-bottom: 15px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: var(--card-bg);
+    color: var(--muted-text);
+}
+
+.card-title {
+    font-weight: 600;
+    margin-bottom: 5px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.card-artist {
+    color: var(--muted-text);
+    font-size: 0.9rem;
+    margin-bottom: 15px;
+}
+
+.btn-play {
+    background-color: var(--primary-color);
+    color: white;
+    border: none;
+    padding: 8px 0;
+    border-radius: 5px;
+    font-weight: 600;
+    transition: all 0.2s ease;
+    text-align: center;
+    text-decoration: none;
+    margin-top: auto;
+    display: block;
+}
+
+.btn-play:hover {
+    background-color: #19a34a;
+    color: white;
+}
+
+.sidebar-link {
+    color: var(--muted-text);
+    text-decoration: none;
+    display: block;
+    padding: 10px 15px;
+    margin-bottom: 5px;
+    border-radius: 5px;
+    transition: all 0.2s ease;
+}
+
+.sidebar-link:hover, .sidebar-link.active {
+    background-color: rgba(255, 255, 255, 0.1);
+    color: var(--text-color);
+}
+
+.sidebar-link i {
+    margin-right: 10px;
+    width: 20px;
+    text-align: center;
+}
+
+.empty-state {
+    background-color: var(--card-bg);
+    border-radius: 10px;
+    padding: 50px 20px;
+    text-align: center;
+}
+
+.empty-state i {
+    font-size: 3rem;
+    color: var(--muted-text);
+    margin-bottom: 20px;
+}
+
+.empty-state h3 {
+    font-weight: 600;
+    margin-bottom: 10px;
+}
+
+.empty-state p {
+    color: var(--muted-text);
+    margin-bottom: 20px;
+}
+
+.playlist-actions {
+    display: flex;
+    gap: 10px;
+    margin-top: 10px;
+}
+
+.btn-edit, .btn-delete {
+    flex: 1;
+    text-align: center;
+    padding: 5px 0;
+    border-radius: 5px;
+    font-size: 0.9rem;
+    text-decoration: none;
+    transition: all 0.2s ease;
+}
+
+.btn-edit {
+    background-color: rgba(255, 255, 255, 0.1);
+    color: var(--text-color);
+}
+
+.btn-edit:hover {
+    background-color: rgba(255, 255, 255, 0.2);
+    color: var(--text-color);
+}
+
+.btn-delete {
+    background-color: rgba(220, 53, 69, 0.1);
+    color: #dc3545;
+}
+
+.btn-delete:hover {
+    background-color: rgba(220, 53, 69, 0.2);
+    color: #dc3545;
+}
+
+.track-item {
+    display: flex;
+    align-items: center;
+    padding: 10px;
+    border-radius: 8px;
+    margin-bottom: 10px;
+    background-color: #2a2a2a;
+    transition: background-color 0.2s;
+}
+
+.track-item.selected {
+    background-color: #3a3a5e;
+    border: 1px solid #6c63ff;
+}
+
+.track-select {
+    margin-right: 10px;
+}
+
+.track-cover {
+    width: 50px;
+    height: 50px;
+    border-radius: 4px;
+    margin-right: 15px;
+}
+
+.track-info {
+    flex-grow: 1;
+}
+
+.track-title {
+    font-weight: bold;
+    color: #fff;
+}
+
+.track-artist {
+    color: #aaa;
+    font-size: 0.9rem;
+}
+
+.btn-add-track {
+    background-color: #6c63ff;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    padding: 5px 10px;
+}
+
+#addSelectedTracksBtn {
+    background-color: #28a745;
+    color: white;
+    border: none;
+}
+
+#addSelectedTracksBtn:disabled {
+    background-color: #6c757d;
+    opacity: 0.65;
+}
+
+/* Styles pour le lecteur fixe */
+.player-bar {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background-color: #1a1a1a;
+    color: white;
+    padding: 10px 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    z-index: 1000;
+    box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.3);
+}
+
+.now-playing {
+    display: flex;
+    align-items: center;
+}
+
+.track-info {
+    margin-left: 10px;
+}
+
+.track-title {
+    font-weight: bold;
+    font-size: 1rem;
+}
+
+.track-artist {
+    font-size: 0.8rem;
+    color: #aaa;
+}
+
+.player-controls {
+    display: flex;
+    align-items: center;
+}
+
+.pause-btn, .close-btn {
+    background: none;
+    border: none;
+    color: white;
+    font-size: 1.5rem;
+    cursor: pointer;
+    margin: 0 10px;
+    transition: all 0.2s;
+}
+
+.pause-btn:hover, .close-btn:hover {
+    color: #1DB954;
+    transform: scale(1.1);
+}

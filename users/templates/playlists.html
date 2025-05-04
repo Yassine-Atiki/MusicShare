@@ -1,4 +1,3 @@
-
 {% load static %}
 <!DOCTYPE html>
 <html lang="fr">
@@ -300,8 +299,8 @@
                         alert(`Erreur lors de l'ajout de ${errorCount} morceau(x).`);
                     }
                 });
-            });
-            
+            })
+
             // Charger les morceaux de l'utilisateur
             function loadUserTracks() {
                 fetch('/api/user-tracks/')
@@ -417,6 +416,6 @@
     </script>
     <!-- À la fin du fichier, juste avant la fermeture de la balise body -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="{% static 'js/player.js' %}"></script>
+    <script src="{% static 'js/players.js' %}"></script>
 </body>
 </html>
