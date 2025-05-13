@@ -13,6 +13,7 @@ urlpatterns = [
     path('upload/', views.upload_music.as_view(), name='upload_music'),
     path('track/<int:track_id>/', views.track_detail.as_view(), name='track_detail'),
     path('play/<int:track_id>/', views.play_track.as_view(), name='play_track'),
+    path('track/<int:track_id>/delete/', views.delete_track.as_view(), name='delete_track'),
     
     # Playlist related URLs
     path('playlists/', views.playlists.as_view(), name='playlists'),

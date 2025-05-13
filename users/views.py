@@ -336,15 +336,27 @@ class profile(View):
         user = User.objects.get(id=user_id)
         
         # Get user's tracks
-        tracks = Morceau.objects.filter(user=user).order_by('-date')
+        uploaded_tracks = Morceau.objects.filter(user=user).order_by('-date')
         
         # Get user's playlists
         playlists = Playlist.objects.filter(user=user)
         
+        # Get user's listening history
+        history = Historique.objects.filter(user=user).order_by('-date')
+        
+        # Count statistics
+        uploaded_tracks_count = uploaded_tracks.count()
+        playlists_count = playlists.count()
+        history_count = history.count()
+        
         context = {
             'user': user,
-            'tracks': tracks,
-            'playlists': playlists
+            'uploaded_tracks': uploaded_tracks,
+            'playlists': playlists,
+            'history': history,
+            'uploaded_tracks_count': uploaded_tracks_count,
+            'playlists_count': playlists_count,
+            'history_count': history_count
         }
         
         return render(request, 'profile.html', context)
@@ -558,3 +570,26 @@ class clear_history(View):
         
         messages.success(request, "Votre historique d'écoute a été supprimé avec succès!")
         return redirect('users:history')
+
+# Delete track view
+class delete_track(View):
+    def get(self, request, track_id):
+        if 'user_id' not in request.session:
+            return redirect('users:login')
+        
+        user_id = request.session['user_id']
+        user = User.objects.get(id=user_id)
+        
+        # Get the track
+        track = get_object_or_404(Morceau, id=track_id)
+        
+        # Check if user owns the track
+        if track.user.id != user_id:
+            messages.error(request, "Vous n'avez pas l'autorisation de supprimer ce morceau.")
+            return redirect('users:profile')
+        
+        # Delete the track
+        track.delete()
+        
+        messages.success(request, "Morceau supprimé avec succès!")
+        return redirect('users:profile')
