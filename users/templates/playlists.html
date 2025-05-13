@@ -315,7 +315,10 @@
                                         <input type="checkbox" class="form-check-input track-checkbox" data-track-id="${track.id}">
                                     </div>
                                     <div class="track-cover d-flex align-items-center justify-content-center bg-dark">
-                                        <i class="fas fa-music"></i>
+                                        ${track.image_url ? 
+                                            `<img src="${track.image_url}" alt="${track.titre}" style="width: 100%; height: 100%; object-fit: cover;">` : 
+                                            `<i class="fas fa-music"></i>`
+                                        }
                                     </div>
                                     <div class="track-info">
                                         <div class="track-title">${track.titre}</div>
