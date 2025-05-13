@@ -91,7 +91,11 @@
                             <div class="col-md-4 col-lg-3">
                                 <div class="music-card">
                                     <div class="album-art d-flex align-items-center justify-content-center bg-dark">
-                                        <i class="fas fa-music fa-3x text-muted"></i>
+                                        {% if track.image %}
+                                            <img src="{{ track.image.url }}" alt="Album cover">
+                                        {% else %}
+                                            <i class="fas fa-music fa-3x text-muted"></i>
+                                        {% endif %}
                                     </div>
                                     <h5 class="card-title">{{ track.titre }}</h5>
                                     <p class="card-artist">{{ track.artiste }}</p>
@@ -185,7 +189,13 @@
                             {% for history in history_tracks %}
                             <div class="col-md-4 col-lg-3">
                                 <div class="music-card">
-                                    <img src="{{ history.morceau.image.url|default:'/static/images/default-cover.jpg' }}" alt="Album cover" class="album-art">
+                                    <div class="album-art d-flex align-items-center justify-content-center bg-dark">
+                                        {% if history.morceau.image %}
+                                            <img src="{{ history.morceau.image.url }}" alt="Album cover">
+                                        {% else %}
+                                            <i class="fas fa-music fa-3x text-muted"></i>
+                                        {% endif %}
+                                    </div>
                                     <h5 class="card-title">{{ history.morceau.titre }}</h5>
                                     <p class="card-artist">{{ history.morceau.artiste }}</p>
                                     <button class="btn-play w-100 play-track" data-track-id="{{ history.morceau.id }}">

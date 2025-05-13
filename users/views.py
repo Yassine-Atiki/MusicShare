@@ -105,13 +105,13 @@ class upload_music(View):
         user_id = request.session['user_id']
         user = User.objects.get(id=user_id)
         
-        # Get form data with validation to prevent NULL values
-        titre = request.POST.get('titre', '')
+        # Get form data with validation
+        titre = request.POST.get('titre', '').strip()
         if not titre:
             messages.error(request, "Le titre du morceau est obligatoire.")
             return redirect('users:upload_music')
             
-        artiste = request.POST.get('artiste', '')
+        artiste = request.POST.get('artiste', '').strip()
         if not artiste:
             messages.error(request, "Le nom de l'artiste est obligatoire.")
             return redirect('users:upload_music')
@@ -125,7 +125,7 @@ class upload_music(View):
             
         fichier = request.FILES.get('fichier')
         
-        # Create and save the track
+        # Create the track
         morceau = Morceau(
             titre=titre,
             artiste=artiste,
@@ -133,11 +133,16 @@ class upload_music(View):
             fichier=fichier,
             user=user
         )
+        
+        # Add image if provided
+        if 'image' in request.FILES:
+            morceau.image = request.FILES.get('image')
+        
         morceau.save()
         
         messages.success(request, "Morceau uploadé avec succès!")
         return redirect('users:dashboard')
-        
+
 # Track detail view
 class track_detail(View):
     def get(self, request, track_id):
@@ -174,12 +179,17 @@ class play_track(View):
         # Add to history
         Historique.objects.create(user=user, morceau=track)
         
-        # Return the file URL
-        return JsonResponse({
+        # Return the file URL and image URL if available
+        response_data = {
             'titre': track.titre,
             'artiste': track.artiste,
             'file_url': track.fichier.url,
-        })
+        }
+        
+        if track.image:
+            response_data['image_url'] = track.image.url
+        
+        return JsonResponse(response_data)
 
 # Playlists view
 class playlists(View):
@@ -234,51 +244,6 @@ class create_playlist(View):
         
         messages.success(request, "Playlist créée avec succès!")
         return redirect('users:playlist_detail', playlist_id=playlist.id)
-
-# For upload_music view
-# Remove the duplicate upload_music class and keep only one implementation
-class upload_music(View):
-    def get(self, request):
-        if 'user_id' not in request.session:
-            return redirect('users:login')
-        
-        # Get the username from the database using the user_id in session
-        user_id = request.session['user_id']
-        user = User.objects.get(id=user_id)
-        username = user.username
-        
-        return render(request, 'upload_music.html', {'username': username})
-    
-    def post(self, request):
-        if 'user_id' not in request.session:
-            return redirect('users:login')
-        
-        user_id = request.session['user_id']
-        user = User.objects.get(id=user_id)
-        
-        # Get form data with validation
-        nom = request.POST.get('nom', '').strip()
-        if not nom:
-            messages.error(request, "Le champ 'nom' est obligatoire.")
-            return redirect('users:upload_music')
-        
-        # Check if file is provided
-        if 'fichier' not in request.FILES:
-            messages.error(request, "Le fichier audio est obligatoire.")
-            return redirect('users:upload_music')
-            
-        fichier = request.FILES.get('fichier')
-        
-        # Create and save the track
-        morceau = Morceau(
-            titre=nom,
-            fichier=fichier,
-            user=user
-        )
-        morceau.save()
-        
-        messages.success(request, "Morceau uploadé avec succès!")
-        return redirect('users:dashboard')
 
 # Playlist detail view
 class playlist_detail(View):

@@ -16,6 +16,7 @@ class Morceau(models.Model):
     artiste = models.CharField(max_length=100)
     genre = models.CharField(max_length=50)
     fichier = models.FileField(upload_to='morceaux/')
+    image = models.ImageField(upload_to='morceaux_images/', null=True, blank=True)
     date = models.DateTimeField(auto_now_add=True)
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     

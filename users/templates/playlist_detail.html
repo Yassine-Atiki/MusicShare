@@ -109,9 +109,13 @@
                         <!-- Pour chaque morceau dans la playlist, modifiez le bouton de lecture -->
                         <div class="track-item" data-track-id="{{ track_item.morceau.id }}">
                             <div class="track-number">{{ track_item.ordre }}</div>
-                            <!-- Replace the cover image with a default icon if no cover exists -->
+                            <!-- Display the track image if available -->
                             <div class="track-cover d-flex align-items-center justify-content-center bg-dark">
-                                <i class="fas fa-music"></i>
+                                {% if track_item.morceau.image %}
+                                    <img src="{{ track_item.morceau.image.url }}" alt="{{ track_item.morceau.titre }}">
+                                {% else %}
+                                    <i class="fas fa-music"></i>
+                                {% endif %}
                             </div>
                             <div class="track-info">
                                 <div class="track-title">{{ track_item.morceau.titre }}</div>

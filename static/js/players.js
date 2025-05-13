@@ -99,6 +99,40 @@ document.addEventListener('DOMContentLoaded', function() {
                                 if (trackArtist && data.artiste) {
                                     trackArtist.textContent = data.artiste;
                                 }
+                                
+                                // Ajouter l'image du morceau si disponible
+                                if (data.image_url) {
+                                    // Vérifier si une image existe déjà
+                                    let trackImage = playerBar.querySelector('.track-image');
+                                    if (!trackImage) {
+                                        // Créer l'élément d'image s'il n'existe pas
+                                        trackImage = document.createElement('div');
+                                        trackImage.className = 'track-image me-3';
+                                        trackImage.style.width = '40px';
+                                        trackImage.style.height = '40px';
+                                        trackImage.style.borderRadius = '4px';
+                                        trackImage.style.overflow = 'hidden';
+                                        trackImage.style.position = 'relative';
+                                        
+                                        const img = document.createElement('img');
+                                        img.style.width = '100%';
+                                        img.style.height = '100%';
+                                        img.style.objectFit = 'cover';
+                                        img.style.position = 'absolute';
+                                        trackImage.appendChild(img);
+                                        
+                                        // Insérer avant les informations de piste
+                                        const nowPlaying = playerBar.querySelector('.now-playing');
+                                        nowPlaying.insertBefore(trackImage, nowPlaying.firstChild);
+                                    }
+                                    
+                                    // Mettre à jour l'image
+                                    const img = trackImage.querySelector('img');
+                                    if (img) {
+                                        img.src = data.image_url;
+                                        img.alt = data.titre;
+                                    }
+                                }
                             }
                         })
                         .catch(error => {
