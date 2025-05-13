@@ -12,9 +12,33 @@
         .btn-action.btn-danger {
             background-color: #dc3545;
             color: white;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+            transition: all 0.3s ease;
         }
         .btn-action.btn-danger:hover {
             background-color: #bb2d3b;
+            transform: scale(1.1);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.3);
+        }
+        .default-cover {
+            background-color: #333;
+            color: #aaa;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 60px;
+            height: 60px;
+            border-radius: 4px;
+        }
+        .music-actions {
+            display: flex;
+            align-items: center;
         }
     </style>
 </head>
@@ -100,14 +124,16 @@
                                     {% if track.image %}
                                         <img src="{{ track.image.url }}" alt="Couverture" class="music-cover">
                                     {% else %}
-                                        <img src="{% static 'images/default-cover.jpg' %}" alt="Couverture par défaut" class="music-cover">
+                                        <div class="default-cover">
+                                            <i class="fas fa-music"></i>
+                                        </div>
                                     {% endif %}
                                     <div class="music-info">
                                         <div class="music-title">{{ track.titre }}</div>
                                         <div class="music-artist">{{ track.artiste }}</div>
                                     </div>
                                     <div class="music-actions">
-                                        <a href="{% url 'users:delete_track' track.id %}" class="btn-action btn-danger" onclick="return confirm('Êtes-vous sûr de vouloir supprimer ce morceau?');">
+                                        <a href="{% url 'users:delete_track' track.id %}" class="btn-action btn-danger" title="Supprimer ce morceau" onclick="return confirm('Êtes-vous sûr de vouloir supprimer ce morceau?');">
                                             <i class="fas fa-trash"></i>
                                         </a>
                                     </div>
@@ -184,7 +210,9 @@
                                     {% if item.morceau.image %}
                                         <img src="{{ item.morceau.image.url }}" alt="Couverture" class="music-cover">
                                     {% else %}
-                                        <img src="{% static 'images/default-cover.jpg' %}" alt="Couverture par défaut" class="music-cover">
+                                        <div class="default-cover">
+                                            <i class="fas fa-music"></i>
+                                        </div>
                                     {% endif %}
                                     <div class="music-info">
                                         <div class="music-title">{{ item.morceau.titre }}</div>
