@@ -546,13 +546,19 @@ class user_tracks(View):
         tracks_data = []
         
         for track in tracks:
-            tracks_data.append({
+            track_data = {
                 'id': track.id,
                 'titre': track.titre,
                 'artiste': track.artiste,
                 'genre': track.genre,
                 'fichier_url': track.fichier.url if track.fichier else None,
-            })
+            }
+            
+            # Ajouter l'URL de l'image si elle existe
+            if track.image:
+                track_data['image_url'] = track.image.url
+            
+            tracks_data.append(track_data)
         
         return JsonResponse({'tracks': tracks_data})
 
